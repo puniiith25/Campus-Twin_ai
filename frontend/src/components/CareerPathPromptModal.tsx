@@ -80,23 +80,15 @@ export const CareerPathPromptModal: React.FC<CareerPathPromptModalProps> = ({
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Button */}
         <div className="space-y-3">
           <button
             onClick={onSetCareerPath}
-            className="w-full flex items-center justify-center space-x-2 py-3.5 px-5 rounded-xl bg-[#167C80] hover:bg-[#126467] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all transform active:scale-[0.99] cursor-pointer"
+            className="w-full flex items-center justify-center space-x-2 py-4 px-5 rounded-xl bg-[#167C80] hover:bg-[#126467] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all transform active:scale-[0.99] cursor-pointer"
           >
             <Compass className="w-4 h-4" />
             <span>Set My Career Path & Target Role</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
-
-          <button
-            onClick={onUseDemoProfile}
-            className="w-full flex items-center justify-center space-x-2 py-3 px-5 rounded-xl bg-white hover:bg-[#F8FAF9] text-[#0B1F33] border border-[#D1D9E0] font-medium text-xs sm:text-sm transition-colors cursor-pointer"
-          >
-            <UserCheck className="w-4 h-4 text-[#52606D]" />
-            <span>Quick Start with Demo Profile (Ananya Rao · AI Engineer)</span>
           </button>
         </div>
 

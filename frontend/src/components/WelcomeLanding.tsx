@@ -147,21 +147,14 @@ export const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
           </div>
         </div>
 
-        {/* Primary & Secondary Call to Actions */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+        {/* Primary Call to Action */}
+        <div className="flex items-center gap-3 pt-2">
           <button
             onClick={onStartPath}
-            className="flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-[#167C80] hover:bg-[#126467] text-white font-medium text-base shadow-sm transition-all transform active:scale-[0.99]"
+            className="flex items-center justify-center space-x-2 px-8 py-4 rounded-xl bg-[#167C80] hover:bg-[#126467] text-white font-medium text-base shadow-sm hover:shadow-md transition-all transform active:scale-[0.99] cursor-pointer"
           >
             <span>Start My Career Path</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
-
-          <button
-            onClick={onUseDemoProfile}
-            className="flex items-center justify-center space-x-2 px-5 py-3.5 rounded-xl bg-white hover:bg-[#EEF3F2] text-[#0B1F33] border border-[#D1D9E0] font-medium text-base transition-colors cursor-pointer"
-          >
-            <span>Explore Demo Profile (Ananya Rao · CSE)</span>
           </button>
         </div>
       </div>
