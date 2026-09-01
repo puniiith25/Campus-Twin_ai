@@ -29,8 +29,8 @@ Campus Twin is a Genie-powered "What-If" Explorer for campus life that transform
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14 (App Router), TypeScript, React 18, Tailwind CSS, Lucide Icons, Framer Motion, Recharts.
-- **Backend**: Python 3.11+, FastAPI, Pydantic v2, httpx, Uvicorn.
+- **Frontend**: React 18, Vite, Tailwind CSS, Lucide Icons, Framer Motion, Recharts, React-Markdown.
+- **Backend**: Node.js (ES Modules), Express.js, Google OAuth, CSV Parser.
 - **Data Platform**: Databricks Free Edition, Unity Catalog (`campus_twin.campus`), Databricks SQL, Databricks Genie Agent.
 - **Containerization**: Docker, Docker Compose.
 
@@ -40,7 +40,6 @@ Campus Twin is a Genie-powered "What-If" Explorer for campus life that transform
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Python 3.10+
 - Docker & Docker Compose (optional for containerized run)
 
 ### Running Locally
@@ -50,15 +49,13 @@ Campus Twin is a Genie-powered "What-If" Explorer for campus life that transform
    cp .env.example .env
    ```
 
-2. **Run Backend (FastAPI)**:
+2. **Run Backend (Node.js & Express)**:
    ```bash
    cd backend
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   PYTHONPATH=. uvicorn app.main:app --reload --port 8000
+   npm install
+   npm run dev
    ```
-   - API Documentation: `http://localhost:8000/docs`
+   - Server runs at: `http://localhost:8000`
 
 3. **Run Frontend (Next.js)**:
    ```bash
