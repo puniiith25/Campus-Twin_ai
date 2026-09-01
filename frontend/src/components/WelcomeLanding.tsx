@@ -159,51 +159,10 @@ export const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
 
           <button
             onClick={onUseDemoProfile}
-            className="flex items-center justify-center space-x-2 px-5 py-3.5 rounded-xl bg-white hover:bg-[#EEF3F2] text-[#0B1F33] border border-[#D1D9E0] font-medium text-base transition-colors"
+            className="flex items-center justify-center space-x-2 px-5 py-3.5 rounded-xl bg-white hover:bg-[#EEF3F2] text-[#0B1F33] border border-[#D1D9E0] font-medium text-base transition-colors cursor-pointer"
           >
             <span>Explore Demo Profile (Ananya Rao · CSE)</span>
           </button>
-        </div>
-
-        {/* Subtle Conversational Natural Input Entry */}
-        <div className="mt-10 p-5 rounded-2xl bg-[#EEF3F2] border border-[#D1D9E0]/80">
-          <div className="flex items-center space-x-2 text-xs font-semibold text-[#0B1F33] mb-2">
-            <MessageSquareText className="w-4 h-4 text-[#167C80]" />
-            <span>Not sure where to start? Tell Campus Twin in plain language:</span>
-          </div>
-
-          <form onSubmit={handleCustomSubmit} className="flex flex-col sm:flex-row gap-2">
-            <input
-              type="text"
-              value={naturalText}
-              onChange={(e) => setNaturalText(e.target.value)}
-              placeholder="e.g. I'm a 4th sem CSE student with 8.2 CGPA, know Python & C++, interested in AI..."
-              className="flex-1 px-4 py-2.5 rounded-xl bg-white border border-[#D1D9E0] text-sm text-[#17212B] placeholder-[#7B8794] focus:outline-none focus:ring-2 focus:ring-[#167C80]/30 focus:border-[#167C80]"
-            />
-            <button
-              type="submit"
-              className="px-5 py-2.5 rounded-xl bg-[#0B1F33] hover:bg-[#102A43] text-white text-xs font-medium whitespace-nowrap transition-colors flex items-center justify-center space-x-1.5"
-            >
-              <span>Build My Twin</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </form>
-
-          {/* Prompt chips */}
-          <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs text-[#52606D]">
-            <span className="text-[11px] text-[#7B8794] mr-1">Quick examples:</span>
-            {samplePrompts.map((p, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => handleQuickPrompt(p)}
-                className="text-[11px] px-2.5 py-1 rounded-lg bg-white hover:bg-[#F8FAF9] border border-[#D1D9E0] text-[#52606D] hover:text-[#0B1F33] transition-colors truncate max-w-[280px]"
-                title={p}
-              >
-                "{p.slice(0, 38)}..."
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 
