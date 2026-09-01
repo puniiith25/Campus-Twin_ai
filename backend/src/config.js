@@ -21,7 +21,7 @@ export const config = {
   GENIE_SPACE_ID: process.env.GENIE_SPACE_ID || "",
   GENIE_AGENT_ID: process.env.GENIE_AGENT_ID || "",
 
-  CORS_ORIGINS: (process.env.CORS_ORIGINS || "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173")
+  CORS_ORIGINS: (process.env.CORS_ORIGINS || "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173,https://campus-twin-ai-d4lm.vercel.app")
     .split(",")
     .map((o) => o.trim())
     .filter(Boolean),

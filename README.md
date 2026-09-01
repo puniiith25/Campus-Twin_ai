@@ -2,7 +2,11 @@
 
 > **Tagline**: *"Explore Your Campus. Discover Your Path."*
 
-Campus Twin is a full-stack **Genie-Powered Personalized Campus What-If Explorer & Career Intelligence Platform** powered by Databricks Genie, campus datasets, deterministic recommendation algorithms, and a personalized student profile.
+[![Frontend Live](https://img.shields.io/badge/Frontend-Live%20on%20Vercel-success?style=flat-square&logo=vercel)](https://campus-twin-ai-d4lm.vercel.app)
+[![Backend Live](https://img.shields.io/badge/Backend-Live%20API-blue?style=flat-square&logo=vercel)](https://campus-twin-ai-mrbl.vercel.app)
+
+- 🌐 **Live Web Application**: [https://campus-twin-ai-d4lm.vercel.app](https://campus-twin-ai-d4lm.vercel.app)
+- 🔌 **Live Backend API**: [https://campus-twin-ai-mrbl.vercel.app](https://campus-twin-ai-mrbl.vercel.app)
 
 ---
 
