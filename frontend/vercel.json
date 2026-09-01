@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://your-backend-service.onrender.com/api/:path*"
+      "destination": "https://campus-twin-ai-mrbl.vercel.app/api/:path*"
     },
     {
       "source": "/(.*)",
