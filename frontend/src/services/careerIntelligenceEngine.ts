@@ -344,7 +344,12 @@ export function getSkillGapsForRole(student: StudentProfile, targetRoleTitle: st
 }
 
 /**
- * Generates personalized sequential roadmap ("My Path")
+ * Generates personalized sequential roadmap ("My Path") customized for specific target roles:
+ * - AI Engineer / Machine Learning
+ * - Data Scientist / Analytics
+ * - Full-Stack Software Engineer
+ * - Backend / Systems Engineer
+ * - Cloud & DevOps Engineer
  */
 export function generatePersonalizedRoadmap(
   student: StudentProfile,
@@ -356,43 +361,638 @@ export function generatePersonalizedRoadmap(
   ) || MASTER_CAREER_ROLES[0];
 
   const hours = student.weeklyHours || 6;
-  const currentSkills = student.skills.map((s) => s.name.toLowerCase());
+  const isFullStack = roleTitle.toLowerCase().includes('full-stack') || roleTitle.toLowerCase().includes('frontend') || roleTitle.toLowerCase().includes('web');
+  const isDataScience = roleTitle.toLowerCase().includes('data scientist') || roleTitle.toLowerCase().includes('data science') || roleTitle.toLowerCase().includes('analytics');
+  const isCloudDevOps = roleTitle.toLowerCase().includes('cloud') || roleTitle.toLowerCase().includes('devops');
+  const isBackend = roleTitle.toLowerCase().includes('backend') || roleTitle.toLowerCase().includes('systems');
 
-  const steps: RoadmapStep[] = [
-    {
-      monthNumber: 0,
-      stageTitle: 'TODAY: Baseline Position',
-      phase: 'Today',
-      focusSummary: `${student.department} · Semester ${student.semester} · ${student.cgpa} CGPA · ${hours} hrs/wk`,
-      actions: [
-        `Solid base in ${student.skills.slice(0, 2).map((s) => s.name).join(', ')}`,
-        `${student.projects.length} completed project(s) on record`,
-        `Identified ${role.title} as target career trajectory`,
-      ],
-      targetMilestone: 'Profile snapshot validated in Databricks Lakehouse',
-      estimatedHoursPerWeek: hours,
-      completed: true,
-      weeks: [
-        {
-          id: 'm0_w1',
-          weekNumber: 1,
-          title: 'Campus Twin Baseline Audit',
-          description: 'Synchronize verified coursework, CGPA transcript, and verified skill badges with Databricks Lakehouse storage.',
-          estimatedHours: Math.min(hours, 4),
-          deliverable: 'Complete Lakehouse student profile snapshot',
-          completed: true,
-        },
-        {
-          id: 'm0_w2',
-          weekNumber: 2,
-          title: 'Target Role Benchmark & Gap Diagnosis',
-          description: `Map existing skills against ${role.title} requirements and isolate critical missing competencies.`,
-          estimatedHours: Math.min(hours, 4),
-          deliverable: 'Role readiness benchmark diagnostic score',
-          completed: true,
-        },
-      ],
-    },
+  // Baseline Month 0 (universal)
+  const month0: RoadmapStep = {
+    monthNumber: 0,
+    stageTitle: 'TODAY: Baseline Position',
+    phase: 'Today',
+    focusSummary: `${student.department} · Semester ${student.semester} · ${student.cgpa} CGPA · ${hours} hrs/wk`,
+    actions: [
+      `Solid base in ${student.skills.slice(0, 2).map((s) => s.name).join(', ') || 'Core Programming'}`,
+      `${student.projects.length} completed project(s) on record`,
+      `Target Trajectory: ${role.title}`,
+    ],
+    targetMilestone: 'Profile snapshot validated in Databricks Lakehouse',
+    estimatedHoursPerWeek: hours,
+    completed: true,
+    weeks: [
+      {
+        id: 'm0_w1',
+        weekNumber: 1,
+        title: 'Campus Twin Baseline Audit',
+        description: 'Synchronize verified coursework, CGPA transcript, and verified skill badges with Databricks Lakehouse storage.',
+        estimatedHours: Math.min(hours, 4),
+        deliverable: 'Complete Lakehouse student profile snapshot',
+        completed: true,
+      },
+      {
+        id: 'm0_w2',
+        weekNumber: 2,
+        title: 'Target Role Benchmark & Gap Diagnosis',
+        description: `Map existing skills against ${role.title} requirements and isolate critical missing competencies.`,
+        estimatedHours: Math.min(hours, 4),
+        deliverable: 'Role readiness benchmark diagnostic score',
+        completed: true,
+      },
+    ],
+  };
+
+  // 1. FULL-STACK SOFTWARE ENGINEER ROADMAP
+  if (isFullStack) {
+    return [
+      month0,
+      {
+        monthNumber: 1,
+        stageTitle: 'MONTH 1: Modern Frontend & State Architecture',
+        phase: 'Strengthen Core',
+        focusSummary: 'Master Advanced React 19, TypeScript & Responsive UI',
+        actions: [
+          'Master TypeScript generics, custom hooks, and React performance profiling (useMemo/useCallback)',
+          'Build atomic design systems using Tailwind CSS and component libraries (Shadcn UI)',
+          'Implement client-side caching & server state with TanStack React Query',
+        ],
+        targetMilestone: 'Production-ready React/TypeScript UI component library with storybook',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_04',
+        weeks: [
+          {
+            id: 'fs_m1_w1',
+            weekNumber: 1,
+            title: 'Week 1: TypeScript Deep Dive & Modern DOM Paradigms',
+            description: 'Strict TypeScript typing, interface vs type, generics, utility types, and event typing in React.',
+            estimatedHours: hours,
+            deliverable: 'Fully typed UI widget library on GitHub',
+          },
+          {
+            id: 'fs_m1_w2',
+            weekNumber: 2,
+            title: 'Week 2: Advanced React Patterns & Custom Hooks',
+            description: 'Compound components, render props, reducer patterns, and custom reusable hook abstractions.',
+            estimatedHours: hours,
+            deliverable: 'Interactive dashboard UI with dark mode & accessibility standards',
+          },
+          {
+            id: 'fs_m1_w3',
+            weekNumber: 3,
+            title: 'Week 3: State Management & Data Fetching (React Query / Zustand)',
+            description: 'Asynchronous state synchronization, optimistic UI updates, background refetching, and cache invalidation.',
+            estimatedHours: hours,
+            deliverable: 'Multi-step form with live optimistic state updates',
+          },
+          {
+            id: 'fs_m1_w4',
+            weekNumber: 4,
+            title: 'Week 4: Frontend Testing & Web Vitals Optimization',
+            description: 'Component unit tests with Vitest + React Testing Library. Measure Core Web Vitals (LCP, CLS, FID).',
+            estimatedHours: hours,
+            deliverable: '100% test coverage suite for core frontend components',
+          },
+        ],
+      },
+      {
+        monthNumber: 2,
+        stageTitle: 'MONTH 2: Scalable Backend Services & Database Design',
+        phase: 'Expand Skills',
+        focusSummary: 'Build Node.js/Express & PostgreSQL Microservices',
+        actions: [
+          'Design 3NF relational schemas with PostgreSQL & Prisma/Drizzle ORM',
+          'Implement JWT authentication, Refresh Tokens, and RBAC authorization middleware',
+          'Build RESTful APIs with input validation (Zod) and structured error handling',
+        ],
+        targetMilestone: 'Secure production backend API handling 1000+ req/sec with database indexes',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_05',
+        weeks: [
+          {
+            id: 'fs_m2_w1',
+            weekNumber: 1,
+            title: 'Week 1: Node.js Runtime & RESTful API Architecture',
+            description: 'Event loop architecture, stream pipelines, asynchronous control flow, and express router modularity.',
+            estimatedHours: hours,
+            deliverable: 'REST API service with Swagger/OpenAPI documentation',
+          },
+          {
+            id: 'fs_m2_w2',
+            weekNumber: 2,
+            title: 'Week 2: Relational Databases & Schema Optimization (PostgreSQL)',
+            description: 'Foreign keys, cascading updates, transactions, B-Tree indexing, and query execution plans.',
+            estimatedHours: hours,
+            deliverable: 'Database migration scripts with seeded test datasets',
+          },
+          {
+            id: 'fs_m2_w3',
+            weekNumber: 3,
+            title: 'Week 3: Authentication, Security & Middleware (JWT/OAuth)',
+            description: 'HTTP-only secure cookies, bcrypt password hashing, CSRF prevention, and rate-limiting.',
+            estimatedHours: hours,
+            deliverable: 'Production authentication microservice with Google OAuth support',
+          },
+          {
+            id: 'fs_m2_w4',
+            weekNumber: 4,
+            title: 'Week 4: Caching & Asynchronous Tasks (Redis / BullMQ)',
+            description: 'Redis in-memory caching for query results, pub/sub messaging, and background queue workers.',
+            estimatedHours: hours,
+            deliverable: 'Redis caching layer with sub-10ms response latency',
+          },
+        ],
+      },
+      {
+        monthNumber: 3,
+        stageTitle: 'MONTH 3: Build Flagship Full-Stack SaaS Application',
+        phase: 'Build Project',
+        focusSummary: 'End-to-End Real-Time Application with Live WebSockets',
+        actions: [
+          'Build full-stack collaborative application (Next.js 15, PostgreSQL, Redis, Socket.io)',
+          'Integrate Stripe payment checkout or Webhook event listener',
+          'Deploy frontend to Vercel and backend microservices to cloud container',
+        ],
+        targetMilestone: '1 flagship Tier-1 portfolio application deployed live with demo URL',
+        estimatedHoursPerWeek: hours,
+        weeks: [
+          {
+            id: 'fs_m3_w1',
+            weekNumber: 1,
+            title: 'Week 1: Product Architecture & System Design',
+            description: 'Define ER diagrams, API contracts, WebSocket event schemas, and design wireframes in Figma.',
+            estimatedHours: hours,
+            deliverable: 'Approved architectural blueprint and API contracts',
+          },
+          {
+            id: 'fs_m3_w2',
+            weekNumber: 2,
+            title: 'Week 2: Real-time Engine & Core Backend Logic',
+            description: 'Implement bidirectional WebSocket messaging, transactional database operations, and webhook handlers.',
+            estimatedHours: hours,
+            deliverable: 'Functional real-time collaboration server with tests',
+          },
+          {
+            id: 'fs_m3_w3',
+            weekNumber: 3,
+            title: 'Week 3: Responsive Client Interface & State Binding',
+            description: 'Connect React frontend with live socket feeds, optimistic mutations, skeleton loaders, and toast alerts.',
+            estimatedHours: hours,
+            deliverable: 'Sleek dark/light mode frontend connected to backend APIs',
+          },
+          {
+            id: 'fs_m3_w4',
+            weekNumber: 4,
+            title: 'Week 4: Production Cloud Deployment & CI/CD',
+            description: 'Dockerize application, configure automated GitHub Actions deployment to cloud, and write rich README.',
+            estimatedHours: hours,
+            deliverable: 'Live production URL + open-source repository with video demo',
+          },
+        ],
+      },
+      {
+        monthNumber: 4,
+        stageTitle: 'MONTH 4: Hackathon Prototyping & Open-Source Collaboration',
+        phase: 'Practical Exposure',
+        focusSummary: 'Collaborate with Campus Teammates & Contribute to OSS',
+        actions: [
+          'Participate in national hackathon with Campus Twin study buddies',
+          'Contribute bug fixes and features to trending open-source web frameworks',
+          'Conduct code reviews and optimize bundle sizes',
+        ],
+        targetMilestone: 'Recognized hackathon finalist badge + 2 merged Pull Requests in open-source repos',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_01',
+        weeks: [
+          {
+            id: 'fs_m4_w1',
+            weekNumber: 1,
+            title: 'Week 1: Team Formation & Hackathon Sprint Ideation',
+            description: 'Form multidisciplinary hackathon team, conduct user interviews, and scope MVP deliverables.',
+            estimatedHours: hours,
+            deliverable: 'Hackathon project pitch and initial boilerplate setup',
+          },
+          {
+            id: 'fs_m4_w2',
+            weekNumber: 2,
+            title: 'Week 2: 36-Hour Hackathon MVP Build Sprint',
+            description: 'Rapid engineering sprint with frictionless user onboarding, polished UI, and functional database layer.',
+            estimatedHours: hours,
+            deliverable: 'Submitted hackathon entry with video demonstration',
+          },
+          {
+            id: 'fs_m4_w3',
+            weekNumber: 3,
+            title: 'Week 3: Open-Source Exploration & Good-First-Issues',
+            description: 'Clone popular open-source repositories, run test suites, and fix documented bug issues.',
+            estimatedHours: hours,
+            deliverable: '2 active Pull Requests submitted to public repositories',
+          },
+          {
+            id: 'fs_m4_w4',
+            weekNumber: 4,
+            title: 'Week 4: Web Performance Tuning & Security Audit',
+            description: 'Lighthouse 100/100 score audit, OWASP top 10 security review, and bundle size tree-shaking.',
+            estimatedHours: hours,
+            deliverable: 'Performance audit report + optimized production bundle',
+          },
+        ],
+      },
+      {
+        monthNumber: 5,
+        stageTitle: 'MONTH 5: DSA Patterns & System Design Interviews',
+        phase: 'Portfolio & Career Ready',
+        focusSummary: 'LeetCode 75 Blind + Frontend & Backend System Design',
+        actions: [
+          'Solve Blind 75 DSA problems in C++ / JavaScript / Python',
+          'Practice Frontend System Design (Virtualization, Autocomplete, Infinite Scroll)',
+          'Practice Backend System Design (Rate Limiters, URL Shortener, Chat Systems)',
+        ],
+        targetMilestone: 'Consistent success on timed 45-minute technical coding screenings',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_08',
+        weeks: [
+          {
+            id: 'fs_m5_w1',
+            weekNumber: 1,
+            title: 'Week 1: Arrays, HashMaps, Two-Pointers & Sliding Window',
+            description: 'Drill 20 medium-level algorithmic challenges with optimal time and space complexity analysis.',
+            estimatedHours: hours,
+            deliverable: '20 algorithmic questions solved and added to DSA repo',
+          },
+          {
+            id: 'fs_m5_w2',
+            weekNumber: 2,
+            title: 'Week 2: Trees, Graphs, BFS/DFS & Recursion',
+            description: 'Tree traversals, binary search trees, graph cycles, and topological sorting under interview timer.',
+            estimatedHours: hours,
+            deliverable: 'Timed mock coding assessment with 100% test pass rate',
+          },
+          {
+            id: 'fs_m5_w3',
+            weekNumber: 3,
+            title: 'Week 3: High-Level & Low-Level System Design',
+            description: 'Load balancers, database sharding, CAP theorem, caching strategies, and REST vs GraphQL trade-offs.',
+            estimatedHours: hours,
+            deliverable: '2 end-to-end system design interview case studies documented',
+          },
+          {
+            id: 'fs_m5_w4',
+            weekNumber: 4,
+            title: 'Week 4: AI Mock Technical & HR Interviews',
+            description: 'Practice simulated coding interviews in Campus Twin Prep Studio with behavioral STAR scenarios.',
+            estimatedHours: hours,
+            deliverable: 'Mock interview report with >85% communication clarity score',
+          },
+        ],
+      },
+      {
+        monthNumber: 6,
+        stageTitle: 'MONTH 6: Full-Stack Placement Drives & Applications',
+        phase: 'Portfolio & Career Ready',
+        focusSummary: 'Campus Placement Drives, Referral Outreach & Final Offers',
+        actions: [
+          'Submit applications to Tier-1 companies (Amazon, Microsoft, Atlassian, Startups)',
+          'Showcase verified Campus Twin credentials and GitHub portfolio',
+          'Clear technical rounds and secure full-time software engineering offers',
+        ],
+        targetMilestone: 'Tier-1 Full-Stack / Software Engineering Job Offer',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_05',
+        weeks: [
+          {
+            id: 'fs_m6_w1',
+            weekNumber: 1,
+            title: 'Week 1: Resume Tailoring & ATS Optimization',
+            description: 'Tailor resume bullets using Google XYZ format ("Accomplished [X], as measured by [Y], by doing [Z]").',
+            estimatedHours: hours,
+            deliverable: '1-page ATS-compliant PDF resume with verified project URLs',
+          },
+          {
+            id: 'fs_m6_w2',
+            weekNumber: 2,
+            title: 'Week 2: Campus Drive Online Assessments (OAs)',
+            description: 'Participate in campus placement company coding rounds on HackerRank / CodeSignal.',
+            estimatedHours: hours,
+            deliverable: 'Cleared OA cutoffs for campus recruitment partners',
+          },
+          {
+            id: 'fs_m6_w3',
+            weekNumber: 3,
+            title: 'Week 3: Live Technical & Pair-Programming Rounds',
+            description: 'Demonstrate clean modular coding, edge-case testing, and vocalized thought process to interviewers.',
+            estimatedHours: hours,
+            deliverable: 'Completed technical onsite interview rounds',
+          },
+          {
+            id: 'fs_m6_w4',
+            weekNumber: 4,
+            title: 'Week 4: Final Managerial Round & Offer Selection',
+            description: 'Discuss engineering culture, career progression, and celebrate offer letter placement!',
+            estimatedHours: hours,
+            deliverable: 'Offer letter in Full-Stack Software Engineering trajectory!',
+          },
+        ],
+      },
+    ];
+  }
+
+  // 2. DATA SCIENTIST ROADMAP
+  if (isDataScience) {
+    return [
+      month0,
+      {
+        monthNumber: 1,
+        stageTitle: 'MONTH 1: Lakehouse SQL & Exploratory Data Analysis',
+        phase: 'Strengthen Core',
+        focusSummary: 'Master Databricks SQL, Window Functions & Pandas/Polars',
+        actions: [
+          'Complete Databricks Lakehouse & SQL Masterclass (4 hrs/wk)',
+          'Practice multi-table joins, window functions (RANK, LEAD, LAG) and CTEs',
+          'Perform statistical exploratory data analysis on real datasets with Pandas & Seaborn',
+        ],
+        targetMilestone: 'Databricks Lakehouse Fundamentals & SQL badge',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_02',
+        weeks: [
+          {
+            id: 'ds_m1_w1',
+            weekNumber: 1,
+            title: 'Week 1: Databricks SQL & Lakehouse Architecture',
+            description: 'Delta Lake ACID transactions, table partitioning, filtering, and aggregation queries on university datasets.',
+            estimatedHours: hours,
+            deliverable: 'Lakehouse SQL analytics notebook with 20 solved query patterns',
+          },
+          {
+            id: 'ds_m1_w2',
+            weekNumber: 2,
+            title: 'Week 2: Advanced Window Functions & Analytical CTEs',
+            description: 'Calculate running averages, cohort retention, percentiles, and month-over-month growth metrics.',
+            estimatedHours: hours,
+            deliverable: 'Cohort retention SQL report on synthetic campus telemetry logs',
+          },
+          {
+            id: 'ds_m1_w3',
+            weekNumber: 3,
+            title: 'Week 3: High-Performance Data Wrangling (Polars & Pandas)',
+            description: 'Data cleaning, imputation of missing values, outlier detection, and vectorized operations.',
+            estimatedHours: hours,
+            deliverable: 'Cleaned, preprocessed and versioned master dataset',
+          },
+          {
+            id: 'ds_m1_w4',
+            weekNumber: 4,
+            title: 'Week 4: Exploratory Data Visualization & Storytelling',
+            description: 'Generate publication-quality charts with Plotly/Seaborn and present business insights.',
+            estimatedHours: hours,
+            deliverable: 'Interactive Streamlit data exploration dashboard',
+          },
+        ],
+      },
+      {
+        monthNumber: 2,
+        stageTitle: 'MONTH 2: Applied Statistics & Machine Learning Modeling',
+        phase: 'Expand Skills',
+        focusSummary: 'Hypothesis Testing, Feature Engineering & Scikit-Learn',
+        actions: [
+          'Master probability distributions, Central Limit Theorem, and A/B hypothesis testing (t-test, ANOVA, Chi-Square)',
+          'Train classification and regression models with Cross-Validation and Hyperparameter tuning (Optuna)',
+          'Evaluate models using ROC-AUC, Precision-Recall curves, and SHAP explainability',
+        ],
+        targetMilestone: 'Production machine learning model with feature importance explainability',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_06',
+        weeks: [
+          {
+            id: 'ds_m2_w1',
+            weekNumber: 1,
+            title: 'Week 1: Applied Probability & Statistical Inference',
+            description: 'Hypothesis testing, p-value interpretation, confidence intervals, and statistical experiment design.',
+            estimatedHours: hours,
+            deliverable: 'Statistical hypothesis testing study on student academic data',
+          },
+          {
+            id: 'ds_m2_w2',
+            weekNumber: 2,
+            title: 'Week 2: Feature Engineering & Dimensionality Reduction',
+            description: 'One-hot encoding, target encoding, scaling, PCA, and feature selection techniques.',
+            estimatedHours: hours,
+            deliverable: 'Feature engineering pipeline with reproducible transformations',
+          },
+          {
+            id: 'ds_m2_w3',
+            weekNumber: 3,
+            title: 'Week 3: Supervised Machine Learning Algorithms',
+            description: 'Linear/Logistic regression, Decision Trees, Random Forests, and XGBoost/LightGBM.',
+            estimatedHours: hours,
+            deliverable: 'Benchmarked ML models with cross-validation performance report',
+          },
+          {
+            id: 'ds_m2_w4',
+            weekNumber: 4,
+            title: 'Week 4: Model Interpretability & Explainable AI (XAI)',
+            description: 'SHAP (Shapley Additive exPlanations) values, LIME, and feature permutation importance.',
+            estimatedHours: hours,
+            deliverable: 'Explainable AI report highlighting key predictive drivers',
+          },
+        ],
+      },
+      {
+        monthNumber: 3,
+        stageTitle: 'MONTH 3: Build Flagship Predictive Data Science Capstone',
+        phase: 'Build Project',
+        focusSummary: 'End-to-End Predictive Analytics & Automated Pipeline',
+        actions: [
+          'Build end-to-end customer churn or student outcome prediction engine',
+          'Deploy model inference pipeline with FastAPI and Docker container',
+          'Build interactive executive business dashboard with interactive KPI filters',
+        ],
+        targetMilestone: '1 enterprise-grade Data Science capstone published on GitHub & Streamlit Cloud',
+        estimatedHoursPerWeek: hours,
+        weeks: [
+          {
+            id: 'ds_m3_w1',
+            weekNumber: 1,
+            title: 'Week 1: Problem Definition & Data Sourcing',
+            description: 'Frame business problem, formulate success KPIs, and ingest raw datasets.',
+            estimatedHours: hours,
+            deliverable: 'Project scope document and data dictionary',
+          },
+          {
+            id: 'ds_m3_w2',
+            weekNumber: 2,
+            title: 'Week 2: Model Training & Experiment Tracking (MLflow)',
+            description: 'Track experiment parameters, metrics, and model artifacts using MLflow on Databricks.',
+            estimatedHours: hours,
+            deliverable: 'MLflow experiment registry with optimal model checkpoint',
+          },
+          {
+            id: 'ds_m3_w3',
+            weekNumber: 3,
+            title: 'Week 3: Model Serving API & UI Dashboard',
+            description: 'Package model into REST API endpoint and build interactive Streamlit analytics dashboard.',
+            estimatedHours: hours,
+            deliverable: 'Live web dashboard with real-time prediction inputs',
+          },
+          {
+            id: 'ds_m3_w4',
+            weekNumber: 4,
+            title: 'Week 4: Executive Presentation & GitHub Showcase',
+            description: 'Write comprehensive methodology writeup with architecture diagram and business recommendations.',
+            estimatedHours: hours,
+            deliverable: 'Clean GitHub repo with live URL and documented impact',
+          },
+        ],
+      },
+      {
+        monthNumber: 4,
+        stageTitle: 'MONTH 4: Big Data Processing & Campus Research Fellowship',
+        phase: 'Practical Exposure',
+        focusSummary: 'Distributed Computing with Apache Spark / PySpark & Research',
+        actions: [
+          'Process large datasets using PySpark DataFrames and Spark SQL',
+          'Engage with university Data Science research group on predictive analytics',
+          'Participate in Kaggle / campus data hackathons',
+        ],
+        targetMilestone: 'PySpark distributed pipeline execution + Kaggle competition submission',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_11',
+        weeks: [
+          {
+            id: 'ds_m4_w1',
+            weekNumber: 1,
+            title: 'Week 1: PySpark Fundamentals & Distributed Architecture',
+            description: 'Spark execution model, DAGs, transformations vs actions, and cluster memory management.',
+            estimatedHours: hours,
+            deliverable: 'PySpark pipeline processing multi-gigabyte log dataset',
+          },
+          {
+            id: 'ds_m4_w2',
+            weekNumber: 2,
+            title: 'Week 2: Spark MLlib & Distributed Model Training',
+            description: 'Train machine learning pipelines on distributed datasets using Spark MLlib.',
+            estimatedHours: hours,
+            deliverable: 'Distributed ML training job run on Databricks cluster',
+          },
+          {
+            id: 'ds_m4_w3',
+            weekNumber: 3,
+            title: 'Week 3: Kaggle Data Hackathon Competition',
+            description: 'Compete in predictive modeling challenge with advanced ensemble modeling (Stacking/Blending).',
+            estimatedHours: hours,
+            deliverable: 'Top quartile leaderboard submission on competitive dataset',
+          },
+          {
+            id: 'ds_m4_w4',
+            weekNumber: 4,
+            title: 'Week 4: Faculty Research Lab Project Presentation',
+            description: 'Present analytical insights and methodology to campus research coordinator.',
+            estimatedHours: hours,
+            deliverable: 'Research review certificate / lab credit recognition',
+          },
+        ],
+      },
+      {
+        monthNumber: 5,
+        stageTitle: 'MONTH 5: SQL & Data Science Interview Mastery',
+        phase: 'Portfolio & Career Ready',
+        focusSummary: 'Live SQL Screenings, Case Studies & Take-Home Challenges',
+        actions: [
+          'Solve top 50 advanced SQL interview challenges (LeetCode / StrataScratch)',
+          'Practice live product metrics & A/B testing case study questions',
+          'Conduct mock technical interviews with Campus Twin AI assistant',
+        ],
+        targetMilestone: 'Consistent success on timed SQL tests and metric product teardowns',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_08',
+        weeks: [
+          {
+            id: 'ds_m5_w1',
+            weekNumber: 1,
+            title: 'Week 1: Timed SQL Coding Screenings',
+            description: 'Solve complex aggregations, self-joins, window functions, and subqueries in under 20 mins.',
+            estimatedHours: hours,
+            deliverable: '50 solved SQL interview problems repository',
+          },
+          {
+            id: 'ds_m5_w2',
+            weekNumber: 2,
+            title: 'Week 2: Machine Learning Theory & Intuition Drills',
+            description: 'Explain bias-variance tradeoff, gradient descent variants, regularization, and loss functions verbally.',
+            estimatedHours: hours,
+            deliverable: 'ML theory interview cheat-sheet and audio summaries',
+          },
+          {
+            id: 'ds_m5_w3',
+            weekNumber: 3,
+            title: 'Week 3: Product Sense & A/B Experimentation Case Studies',
+            description: 'Design A/B test sample sizing, guardrail metrics, novelty effect adjustments, and launch decisions.',
+            estimatedHours: hours,
+            deliverable: '2 end-to-end A/B test case studies documented',
+          },
+          {
+            id: 'ds_m5_w4',
+            weekNumber: 4,
+            title: 'Week 4: AI Mock Data Science Interviews',
+            description: 'Complete 3 simulated interviews in Campus Twin Prep Studio with feedback on technical rigor.',
+            estimatedHours: hours,
+            deliverable: 'Mock interview report with >90% conceptual accuracy',
+          },
+        ],
+      },
+      {
+        monthNumber: 6,
+        stageTitle: 'MONTH 6: Data Science Placement Applications & Offers',
+        phase: 'Portfolio & Career Ready',
+        focusSummary: 'Tier-1 Tech & Analytics Campus Recruitment Drives',
+        actions: [
+          'Apply to Data Scientist & Analytics roles (Databricks, Google, Walmart, Analytics Startups)',
+          'Present portfolio of Lakehouse SQL analytics and machine learning projects',
+          'Ace hiring manager rounds and secure placement offers',
+        ],
+        targetMilestone: 'Data Scientist / ML Analyst Job Offer Secured',
+        estimatedHoursPerWeek: hours,
+        linkedOpportunityId: 'opp_05',
+        weeks: [
+          {
+            id: 'ds_m6_w1',
+            weekNumber: 1,
+            title: 'Week 1: Data Science Resume & Portfolio Optimization',
+            description: 'Format quantitative impact metrics (e.g., "Increased model accuracy by 14% saving 200 compute hrs").',
+            estimatedHours: hours,
+            deliverable: '1-page ATS optimized Data Science resume with portfolio links',
+          },
+          {
+            id: 'ds_m6_w2',
+            weekNumber: 2,
+            title: 'Week 2: Company Online Assessments & Take-Homes',
+            description: 'Complete company data challenges, exploratory analysis notebooks, and metric interpretations.',
+            estimatedHours: hours,
+            deliverable: 'Cleared OA rounds for visiting analytics companies',
+          },
+          {
+            id: 'ds_m6_w3',
+            weekNumber: 3,
+            title: 'Week 3: Technical Round Presentations & Case Discussions',
+            description: 'Present project methodologies to senior data scientists and defend model architecture decisions.',
+            estimatedHours: hours,
+            deliverable: 'Completed technical onsite presentation rounds',
+          },
+          {
+            id: 'ds_m6_w4',
+            weekNumber: 4,
+            title: 'Week 4: Managerial Round & Final Offer Acceptance',
+            description: 'Align on team scope, compensation package, and celebrate career placement offer!',
+            estimatedHours: hours,
+            deliverable: 'Signed offer letter for target Data Scientist role!',
+          },
+        ],
+      },
+    ];
+  }
+
+  // 3. DEFAULT (AI ENGINEER / ML / GENERAL) ROADMAP
+  return [
+    month0,
     {
       monthNumber: 1,
       stageTitle: 'MONTH 1: Bridge Primary Skill Gap',
@@ -681,8 +1281,6 @@ export function generatePersonalizedRoadmap(
       ],
     },
   ];
-
-  return steps;
 }
 
 /**

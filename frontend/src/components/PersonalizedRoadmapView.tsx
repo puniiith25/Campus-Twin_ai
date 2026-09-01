@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { StudentProfile, RoadmapStep } from '../types';
 import { generatePersonalizedRoadmap } from '../services/careerIntelligenceEngine';
+import { MASTER_CAREER_ROLES } from '../data/campusIntelligenceData';
 
 interface RoadmapProps {
   student: StudentProfile;
@@ -32,7 +33,12 @@ export const PersonalizedRoadmapView: React.FC<RoadmapProps> = ({
   student,
   onNavigate,
 }) => {
-  const steps: RoadmapStep[] = generatePersonalizedRoadmap(student, student.careerGoal);
+  // Selected role state (defaults to student's goal)
+  const [selectedRoleTitle, setSelectedRoleTitle] = useState<string>(
+    student.careerGoal || 'AI Engineer'
+  );
+
+  const steps: RoadmapStep[] = generatePersonalizedRoadmap(student, selectedRoleTitle);
   
   // Expanded months state: default Month 1 is open
   const [expandedMonths, setExpandedMonths] = useState<number[]>([1]);
@@ -120,6 +126,34 @@ export const PersonalizedRoadmapView: React.FC<RoadmapProps> = ({
             <Trophy className="w-4 h-4 text-[#167C80]" />
             <span>{completedTasksCount} / {totalTasks} Tasks Done ({progressPercent}%)</span>
           </div>
+        </div>
+      </div>
+
+      {/* Role Pathway Selector Pills */}
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#EEF3F2] shadow-xs">
+        <div className="text-[11px] font-bold uppercase tracking-wider text-[#7B8794] mb-3 flex items-center justify-between">
+          <span>Choose Career Roadmap Track</span>
+          <span className="text-[#167C80] font-semibold">Active: {selectedRoleTitle}</span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {MASTER_CAREER_ROLES.map((r) => {
+            const isSelected = selectedRoleTitle.toLowerCase() === r.title.toLowerCase();
+            return (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => setSelectedRoleTitle(r.title)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+                  isSelected
+                    ? 'bg-[#167C80] text-white shadow-sm'
+                    : 'bg-[#F8FAF9] text-[#52606D] hover:text-[#0B1F33] border border-[#EEF3F2] hover:border-[#167C80]/40'
+                }`}
+              >
+                <span>{r.title}</span>
+                {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white ml-1" />}
+              </button>
+            );
+          })}
         </div>
       </div>
 
