@@ -139,6 +139,16 @@ export interface SkillGap {
   impactExplanation: string;
 }
 
+export interface RoadmapWeekTask {
+  id: string;
+  weekNumber: number; // 1, 2, 3, 4
+  title: string;
+  description: string;
+  estimatedHours: number;
+  deliverable: string;
+  completed?: boolean;
+}
+
 export interface RoadmapStep {
   monthNumber: number;
   stageTitle: string;
@@ -149,6 +159,7 @@ export interface RoadmapStep {
   estimatedHoursPerWeek: number;
   linkedOpportunityId?: string;
   completed?: boolean;
+  weeks?: RoadmapWeekTask[];
 }
 
 export interface PlacementCompanyRecord {

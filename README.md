@@ -24,15 +24,29 @@
    - Multi-factor match scoring across Verified Skills (60%), Academic CGPA (20%), Experience (10%), and Time Budget (10%).
    - Transparent skill gap diagnosis identifying required proficiency levels (*Beginner*, *Intermediate*, *Advanced*).
 
-4. **Campus Ecosystem Hub**:
+4. **AI Placement & Mock Interview Prep Studio**:
+   - Interactive role-tailored technical & behavioral interview simulations with real-time feedback, clarity scoring, and suggested revisions.
+   - Resume ATS scanner analyzing keyword density, missing competencies, and high-impact metric-driven bullet points.
+
+5. **Alumni Pathways & Peer Benchmarking Intelligence**:
+   - Step-by-step Lakehouse journey replay of top alumni who graduated from the student's department.
+   - Batch percentile standing across CGPA, readiness score, verified skills, and weekly study load.
+
+6. **Smart Semester Schedule & Course Planner**:
+   - Conflict-free timetable builder with weekly hour load balancing and elective recommendation impact.
+
+7. **Study Buddy & Hackathon Teammate Matcher**:
+   - Complementary matchmaking for national hackathons, research labs, and DSA interview prep circles.
+
+8. **Campus Ecosystem Hub**:
    - Searchable directory of 51 courses, 21 clubs, 50 hackathons & events, 30 research projects, 30 opportunities, and 15 labs.
    - Live time-compatibility filter enforcing weekly hour limits.
 
-5. **Profile & Overview Dashboard**:
+9. **Profile & Overview Dashboard**:
    - Complete student profile snapshot (CGPA, Course, Semester, Time Budget).
    - Dual-tab drawer to review career trajectory metrics and modify profile parameters.
 
-6. **Databricks Lakehouse SQL Storage**:
+10. **Databricks Lakehouse SQL Storage**:
    - Profiles persisted via Delta Lake `MERGE INTO campus_twin.campus.student_profiles`.
    - Action & simulation tracking in `campus_twin.campus.student_activity_logs`.
    - Zero-downtime offline fallback using synthetic campus datasets when credentials are not configured.
