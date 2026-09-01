@@ -74,11 +74,13 @@ app.get("/health", (req, res) => {
   res.json({ status: "healthy" });
 });
 
-// Start Express Server
-const PORT = config.PORT;
-app.listen(PORT, () => {
-  console.log(`${config.PROJECT_NAME} running on http://localhost:${PORT}`);
-  console.log(` Mock Genie Mode: ${config.MOCK_GENIE}`);
-});
+// Start Express Server only when not running in Vercel Serverless environment
+const PORT = config.PORT || 8000;
+if (process.env.NODE_ENV !== "test" && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`${config.PROJECT_NAME} running on http://localhost:${PORT}`);
+    console.log(` Mock Genie Mode: ${config.MOCK_GENIE}`);
+  });
+}
 
 export default app;
