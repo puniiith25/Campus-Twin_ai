@@ -8,9 +8,11 @@ class ScoringService:
         student_profile: StudentProfile
     ) -> Tuple[float, str, List[str]]:
         """Calculates multi-factor recommendation score (0-100), label, and match reasons."""
-        goal_keywords = [k.strip().lower() for k in student_profile.goal.split()]
+        stopwords = {"i", "want", "to", "become", "a", "an", "the", "in", "and", "have", "know", "per", "week", "hours", "my", "is", "for", "with", "get"}
+        raw_words = [k.strip().lower() for k in student_profile.goal.split() if k.strip()]
+        goal_keywords = [w for w in raw_words if w not in stopwords]
         if not goal_keywords:
-            goal_keywords = ["ai", "engineer"]
+            goal_keywords = raw_words or ["ai", "engineer"]
 
         # Item text
         item_text = (
@@ -18,21 +20,24 @@ class ScoringService:
             f"{item.get('skills', '')} {item.get('department', '')} {item.get('category', '')}"
         ).lower()
 
-        # 1. Goal Match (40%)
-        goal_hits = sum(1 for kw in goal_keywords if kw in item_text or kw in [i.lower() for i in student_profile.interests])
-        goal_match = min(100.0, (goal_hits / max(1, len(goal_keywords))) * 100.0 + 30.0)
+        # 1. Goal Match (55%)
+        goal_hits = sum(1 for kw in goal_keywords if kw in item_text)
+        if goal_hits > 0:
+            goal_match = min(100.0, 50.0 + (goal_hits * 25.0))
+        else:
+            goal_match = 10.0
 
-        # 2. Skill Match (25%)
+        # 2. Skill Match (20%)
         student_skill_names = [s.name.lower() for s in student_profile.skills]
         item_skills = [s.strip().lower() for s in str(item.get('skills', '')).split('|') if s.strip()]
         
         if not item_skills:
-            skill_match = 70.0
+            skill_match = 50.0
         else:
             shared_skills = set(student_skill_names).intersection(set(item_skills))
-            skill_match = min(100.0, (len(shared_skills) / max(1, len(item_skills))) * 100.0 + 40.0)
+            skill_match = min(100.0, (len(shared_skills) / max(1, len(item_skills))) * 80.0 + 20.0) if shared_skills else 40.0
 
-        # 3. Time Fit (20%)
+        # 3. Time Fit (15%)
         item_hours = float(item.get('hours_per_week', 2))
         avail_hours = student_profile.available_hours_per_week
         if item_hours <= avail_hours:
@@ -41,7 +46,7 @@ class ScoringService:
             over = item_hours - avail_hours
             time_fit = max(10.0, 100.0 - (over * 25.0))
 
-        # 4. Opportunity Value (15%)
+        # 4. Opportunity Value (10%)
         item_type = str(item.get('type', '')).lower()
         if "research" in item_type or "fellowship" in item_type or "hackathon" in item_type or "internship" in item_type:
             opportunity_value = 95.0
@@ -51,7 +56,7 @@ class ScoringService:
             opportunity_value = 75.0
 
         # Weighted Total Score
-        total_score = (goal_match * 0.40) + (skill_match * 0.25) + (time_fit * 0.20) + (opportunity_value * 0.15)
+        total_score = (goal_match * 0.55) + (skill_match * 0.20) + (time_fit * 0.15) + (opportunity_value * 0.10)
         total_score = round(min(100.0, max(0.0, total_score)), 1)
 
         # Score Label

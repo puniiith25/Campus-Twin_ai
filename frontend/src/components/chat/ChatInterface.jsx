@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { askChat } from "@/lib/api";
 import { Sparkles, Send, Bot, User, Database, ArrowRight, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function ChatInterface({ studentProfile }) {
+export function ChatInterface({ studentProfile, initialQuery }) {
   const [messages, setMessages] = useState([
     {
       id: "welcome",
@@ -14,6 +16,21 @@ export function ChatInterface({ studentProfile }) {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const initialTriggered = useRef(false);
+  const scrollContainerRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: scrollContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, loading]);
 
   const quickPrompts = [
     "I want to become an AI engineer. I know Python and have 6 hours per week.",
@@ -21,6 +38,13 @@ export function ChatInterface({ studentProfile }) {
     "Which clubs help with machine learning?",
     "What if I replace AI Club with research?",
   ];
+
+  useEffect(() => {
+    if (initialQuery && !initialTriggered.current) {
+      initialTriggered.current = true;
+      handleSend(initialQuery);
+    }
+  }, [initialQuery]);
 
   const handleSend = async (textToSend) => {
     const q = textToSend || input;
@@ -81,7 +105,7 @@ export function ChatInterface({ studentProfile }) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -107,15 +131,16 @@ export function ChatInterface({ studentProfile }) {
                     : "bg-white text-slate-800 border border-slate-200 shadow-sm rounded-tl-none"
                 }`}
               >
-                <p className="whitespace-pre-line">{msg.text}</p>
-
-                {msg.queryExecuted && (
-                  <div className="mt-3 p-2 bg-slate-900 text-emerald-400 text-[11px] font-mono rounded border border-slate-800 overflow-x-auto">
-                    <span className="text-slate-500">// Databricks Genie Text-to-SQL Executed</span>
-                    <br />
-                    {msg.queryExecuted}
+                {msg.sender === "user" ? (
+                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                ) : (
+                  <div className="prose prose-sm max-w-none prose-slate text-slate-800 space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>p]:leading-relaxed [&>ul>li]:mt-1 [&>ol>li]:mt-1 [&_strong]:font-semibold [&_strong]:text-slate-900 [&_code]:bg-slate-100 [&_code]:text-indigo-600 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_code]:font-mono">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.text}
+                    </ReactMarkdown>
                   </div>
                 )}
+
 
                 {msg.sources && msg.sources.length > 0 && (
                   <div className="mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-400 flex flex-wrap gap-1">

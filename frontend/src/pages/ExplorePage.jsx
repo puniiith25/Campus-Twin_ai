@@ -33,14 +33,9 @@ export default function ExplorePage() {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left/Main Chat Interface */}
-        <div className="lg:col-span-8">
-          <ChatInterface studentProfile={profile} initialQuery={initialQuery} />
-        </div>
-
-        {/* Right Student Profile Summary Panel */}
-
+      <div className="w-full">
+        {/* Main Chat Interface */}
+        <ChatInterface studentProfile={profile} initialQuery={initialQuery} />
       </div>
     </div>
   );

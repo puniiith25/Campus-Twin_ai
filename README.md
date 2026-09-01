@@ -72,7 +72,6 @@ Campus Twin is a Genie-powered "What-If" Explorer for campus life that transform
 ```bash
 docker-compose up --build
 ```
-
 ---
 
 ## Databricks & Genie Configuration
