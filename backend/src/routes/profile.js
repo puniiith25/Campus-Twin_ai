@@ -38,6 +38,59 @@ router.get("/", (req, res) => {
   return res.json(profile);
 });
 
+// Natural language profile extraction endpoint
+router.post("/extract-natural", (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text || typeof text !== "string") {
+      return res.status(400).json({ error: "Text parameter is required" });
+    }
+
+    const lower = text.toLowerCase();
+    const cgpaMatch = text.match(/([5-9](\.\d{1,2})?|10(\.0{1,2})?)\s*(cgpa|gpa)?/i);
+    const semMatch = text.match(/(\d)(st|nd|rd|th)?\s*(sem|semester)/i);
+
+    const skills = [];
+    const skillKeywords = [
+      "python", "c++", "java", "javascript", "sql", "react", "node.js",
+      "machine learning", "data science", "git", "docker", "cloud", "statistics", "pytorch"
+    ];
+    skillKeywords.forEach((k) => {
+      if (lower.includes(k)) {
+        skills.push({
+          name: k.charAt(0).toUpperCase() + k.slice(1),
+          level: lower.includes(`advanced ${k}`) ? "Advanced" : "Intermediate",
+        });
+      }
+    });
+
+    const interests = [];
+    if (lower.includes("ai") || lower.includes("artificial intelligence")) interests.push("Artificial Intelligence");
+    if (lower.includes("data")) interests.push("Data Science");
+    if (lower.includes("web") || lower.includes("software")) interests.push("Software Development");
+    if (lower.includes("research")) interests.push("Academic Research");
+
+    const projMatch = text.match(/(\d+)\s*(project|projects)/i);
+
+    const extractedProfile = {
+      name: "Student",
+      department: lower.includes("ece") || lower.includes("electronics") ? "Electronics & Communication" : "Computer Science & Engineering",
+      semester: semMatch ? parseInt(semMatch[1], 10) : 4,
+      cgpa: cgpaMatch ? parseFloat(cgpaMatch[1]) : 8.2,
+      skills: skills.length > 0 ? skills : [{ name: "Python", level: "Intermediate" }, { name: "C++", level: "Intermediate" }],
+      interests: interests.length > 0 ? interests : ["Artificial Intelligence", "Data Science"],
+      projectsCount: projMatch ? parseInt(projMatch[1], 10) : 2,
+      careerGoal: lower.includes("ai") ? "AI Engineer" : lower.includes("data") ? "Data Scientist" : "Full-Stack Software Engineer",
+      weeklyHours: 6,
+    };
+
+    return res.json({ success: true, extracted: extractedProfile, source: "backend-nlp-parser" });
+  } catch (error) {
+    console.error("Extraction error:", error);
+    return res.status(500).json({ error: "Failed to extract profile" });
+  }
+});
+
 // 2. Submit 15-Question Onboarding Survey
 router.post("/onboarding", (req, res) => {
   const user = getAuthenticatedUser(req);
