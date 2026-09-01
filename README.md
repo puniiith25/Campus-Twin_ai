@@ -40,35 +40,42 @@ Campus Twin is a Genie-powered "What-If" Explorer for campus life that transform
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Docker & Docker Compose (optional for containerized run)
+- Docker & Docker Compose (for production deployment)
 
-### Running Locally
+### 1. Running Locally (Development)
 
-1. **Clone and Setup Environment Variables**:
-   ```bash
-   cp .env.example .env
-   ```
-
-2. **Run Backend (Node.js & Express)**:
-   ```bash
-   cd backend
-   npm install
-   npm run dev
-   ```
-   - Server runs at: `http://localhost:8000`
-
-3. **Run Frontend (Next.js)**:
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-   - Open browser: `http://localhost:3000`
-
-### Running via Docker Compose
+**Terminal 1 (Backend):**
 ```bash
-docker-compose up --build
+cd backend
+npm install
+npm run dev
 ```
+*Server runs on http://localhost:8000*
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*Frontend runs on http://localhost:3000 (or 5173)*
+
+---
+
+### 2. Production Deployment (Docker Compose)
+
+Deploy both frontend (Nginx production build) and backend (Express container) with one command:
+```bash
+# 1. Configure environment variables
+cp .env.example .env
+
+# 2. Build and launch containers
+docker-compose up --build -d
+```
+
+- **Frontend Application**: `http://localhost:3000`
+- **Backend API**: `http://localhost:8000`
+- **Health Check**: `http://localhost:8000/health`
 ---
 
 ## Databricks & Genie Configuration

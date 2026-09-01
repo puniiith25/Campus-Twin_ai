@@ -12,6 +12,8 @@ import {
   getAnalyzedCareerRoles,
 } from './services/careerIntelligenceEngine';
 
+import { syncProfileWithBackend } from './services/api';
+
 // Components
 import { Navigation, NavTab } from './components/Navigation';
 import { WelcomeLanding } from './components/WelcomeLanding';
@@ -49,10 +51,11 @@ export default function App() {
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
   const [selectedRoleForGaps, setSelectedRoleForGaps] = useState<string | undefined>(undefined);
 
-  // Sync to LocalStorage
+  // Sync to LocalStorage and backend
   useEffect(() => {
     if (student) {
       localStorage.setItem('campus_twin_student_profile', JSON.stringify(student));
+      syncProfileWithBackend(student);
     }
   }, [student]);
 

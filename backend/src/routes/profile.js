@@ -1,5 +1,6 @@
 import express from "express";
 import { userDatabase, profileDatabase, getAuthenticatedUser } from "./auth.js";
+import { databricksService } from "../services/databricksService.js";
 
 const router = express.Router();
 
@@ -67,6 +68,9 @@ router.post("/onboarding", (req, res) => {
   // Save to profile database
   profileDatabase.set(user.user_id, newProfile);
 
+  // Persist to Databricks Lakehouse SQL table
+  databricksService.storeStudentProfile(newProfile);
+
   // Update user onboarding status
   const userObj = userDatabase.get(user.user_id);
   if (userObj) {
@@ -96,6 +100,10 @@ router.post("/update", (req, res) => {
   };
 
   profileDatabase.set(user.user_id, updated);
+
+  // Persist to Databricks Lakehouse SQL table
+  databricksService.storeStudentProfile(updated);
+
   return res.json({ success: true, profile: updated });
 });
 
