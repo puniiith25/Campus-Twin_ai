@@ -1,104 +1,127 @@
-# CAMPUS TWIN
+# 🎓 CAMPUS TWIN
 
 > **Tagline**: *"Explore Your Campus. Discover Your Path."*
 
-Campus Twin is a Genie-powered "What-If" Explorer for campus life that transforms natural language student goals into personalized, data-backed candidate paths across courses, clubs, events, research projects, opportunities, facilities, skills, and city opportunities.
+Campus Twin is a full-stack **Genie-Powered Personalized Campus What-If Explorer & Career Intelligence Platform** powered by Databricks Genie, campus datasets, deterministic recommendation algorithms, and a personalized student profile.
 
 ---
 
-## The Problem & Solution
+## 🌟 Key Features
 
-- **The Problem**: Campus opportunities exist across disconnected siloes (clubs, research labs, course catalogs, hackathons, and internships). Students struggle to see how these opportunities build upon each other toward their long-term career goals.
-- **The Solution**: Campus Twin uses **Databricks Genie** to query connected campus datasets, uncover relationships, and construct personalized candidate journey timelines.
-- **The Central Differentiator**: **The What-If Campus Explorer**. Instead of static recommendations, students can test alternative scenarios (*"What if I replace this club with research?"*, *"What if I only have 4 hours per week?"*) to compare trade-offs before committing.
+1. **Ask Campus Twin (Genie Chat Assistant)**:
+   - Natural language queries grounded directly on Databricks Lakehouse tables (`courses`, `clubs`, `opportunities`, `faculty`).
+   - Clean, structured markdown responses with breakdown metrics, prerequisite validation, and actionable advice.
+
+2. **What-If Career Simulator**:
+   - Test career choices (*"What if I switch from Web Dev to AI Engineer?"* or *"What if I reduce my availability to 4h/week?"*).
+   - Real-time recalculation of readiness score, weekly time constraints, and skill delta trade-offs with 0ms latency.
+
+3. **Career Map & Role Readiness Scoring**:
+   - Multi-factor match scoring across Verified Skills (60%), Academic CGPA (20%), Experience (10%), and Time Budget (10%).
+   - Transparent skill gap diagnosis identifying required proficiency levels (*Beginner*, *Intermediate*, *Advanced*).
+
+4. **Campus Ecosystem Hub**:
+   - Searchable directory of 51 courses, 21 clubs, 50 hackathons & events, 30 research projects, 30 opportunities, and 15 labs.
+   - Live time-compatibility filter enforcing weekly hour limits.
+
+5. **Profile & Overview Dashboard**:
+   - Complete student profile snapshot (CGPA, Course, Semester, Time Budget).
+   - Dual-tab drawer to review career trajectory metrics and modify profile parameters.
+
+6. **Databricks Lakehouse SQL Storage**:
+   - Profiles persisted via Delta Lake `MERGE INTO campus_twin.campus.student_profiles`.
+   - Action & simulation tracking in `campus_twin.campus.student_activity_logs`.
+   - Zero-downtime offline fallback using synthetic campus datasets when credentials are not configured.
 
 ---
 
-## Key Features
+## 🛠️ Technology Stack
 
-1. **Natural Language Goal Explorer**: Accepts goals like *"I want to become an AI engineer. I know Python and have 6 hours per week."*
-2. **Deterministic Recommendation & Scoring Engine**: Multi-factor scoring across Goal Match (40%), Skill Match (25%), Time Fit (20%), and Opportunity Value (15%).
-3. **Strict Time Constraint Validation**: Enforces weekly hour budgets without silent overages.
-4. **Path Generation Service**: Generates structured sequence paths (Career Focus vs Research Focus).
-5. **Real What-If Simulation Engine**: Supports `REPLACE`, `REMOVE`, `ADD`, and `REDUCE_TIME` operations with animated visual diffs and trade-off explanations.
-6. **Multi-Metric Comparison & Recharts Radar**: Side-by-side comparison across Goal Alignment, Time, Research Exposure, Networking, Industry Exposure, Projects, and Faculty Interaction.
-7. **Connected Opportunity Directory**: Searchable directory of 51 courses, 21 clubs, 50 events, 30 research projects, 30 opportunities, 15 facilities, 50 skills, and 30 city events.
-8. **Databricks Genie Integration**: Connects to Databricks Free Edition & Unity Catalog with server-side credential isolation and structured local mock fallback (`MOCK_GENIE=true`).
+- **Frontend**: React 19, TypeScript, Vite 6, Tailwind CSS v4, Lucide Icons, Framer Motion, React-Markdown, Remark GFM.
+- **Backend**: Node.js 20 (ES Modules), Express.js, Google OAuth, CSV Parser.
+- **Data Platform**: Databricks SQL Warehouse, Unity Catalog (`campus_twin.campus`), Databricks Genie AI.
+- **Deployment**: Docker, Docker Compose, Nginx (Alpine), Vercel & Render ready.
 
 ---
 
-## Tech Stack
-
-- **Frontend**: React 18, Vite, Tailwind CSS, Lucide Icons, Framer Motion, Recharts, React-Markdown.
-- **Backend**: Node.js (ES Modules), Express.js, Google OAuth, CSV Parser.
-- **Data Platform**: Databricks Free Edition, Unity Catalog (`campus_twin.campus`), Databricks SQL, Databricks Genie Agent.
-- **Containerization**: Docker, Docker Compose.
-
----
-
-## Quick Start Guide
+## 🚀 Quick Start Guide
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Docker & Docker Compose (for production deployment)
+- Docker & Docker Compose (optional)
 
-### 1. Running Locally (Development)
+### 1. Local Development
 
-**Terminal 1 (Backend):**
+**Terminal 1 — Backend:**
 ```bash
 cd backend
 npm install
 npm run dev
 ```
-*Server runs on http://localhost:8000*
+*Backend runs on `http://localhost:8000`*
 
-**Terminal 2 (Frontend):**
+**Terminal 2 — Frontend:**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-*Frontend runs on http://localhost:3000 (or 5173)*
+*Frontend runs on `http://localhost:3000` (or `5173`)*
 
 ---
 
-### 2. Production Deployment (Docker Compose)
+## 📦 Production Deployment
 
-Deploy both frontend (Nginx production build) and backend (Express container) with one command:
+### Option A: Docker Compose (Single Command)
 ```bash
-# 1. Configure environment variables
+# 1. Setup environment variables
 cp .env.example .env
 
-# 2. Build and launch containers
+# 2. Build and launch all containers
 docker-compose up --build -d
 ```
-
-- **Frontend Application**: `http://localhost:3000`
+- **Frontend App**: `http://localhost:3000`
 - **Backend API**: `http://localhost:8000`
 - **Health Check**: `http://localhost:8000/health`
----
-
-## Databricks & Genie Configuration
-
-For full step-by-step instructions on creating the `campus_twin.campus` catalog, seeding tables, and training Genie Agent, see [databricks/README.md](file:///Users/punith25/Desktop/Campus-Twin/databricks/README.md).
-
-### Development Mock Mode vs Production Genie Mode
-
-- **Mock Mode (`MOCK_GENIE=true`)**: Enabled by default in local development. Uses local synthetic CSV datasets to allow full UI & API testing without active Databricks credentials.
-- **Production Mode (`MOCK_GENIE=false`)**: Set `MOCK_GENIE=false` in `.env` along with `DATABRICKS_HOST`, `DATABRICKS_TOKEN`, `DATABRICKS_WAREHOUSE_ID`, and `GENIE_SPACE_ID` to route queries directly to your Databricks Genie Space.
 
 ---
 
-## Verification & Testing
+### Option B: Deploy to Vercel (Frontend) & Render (Backend)
 
-Run the full pytest suite for scoring, constraints, What-If engine, and API routes:
+#### 1. Backend on Render / Railway:
+- **Runtime**: `Node`
+- **Root Directory**: `backend`
+- **Build Command**: `npm install`
+- **Start Command**: `node src/server.js`
+- Set Environment Variables: `DATABRICKS_HOST`, `DATABRICKS_TOKEN`, `DATABRICKS_WAREHOUSE_ID`, `GENIE_SPACE_ID`, `CORS_ORIGINS=*`.
+
+#### 2. Frontend on Vercel:
+- **Framework Preset**: `Vite`
+- **Root Directory**: `frontend`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- Set Environment Variable: `VITE_API_URL` to your backend Render URL.
+
+---
+
+## 🗄️ Databricks Table Seeding
+
+To seed all synthetic campus datasets into your Databricks Unity Catalog (`campus_twin.campus.*`):
 ```bash
-PYTHONPATH=backend backend/.venv/bin/pytest backend/tests
+node databricks/seed_databricks_tables.js
 ```
 
+Seeded Tables:
+- `courses` (51 records)
+- `clubs` (21 records)
+- `events` (50 records)
+- `research_projects` (30 records)
+- `opportunities` (30 records)
+- `facilities` (15 records)
+- `skills` (50 records)
+- `faculty` (10 records)
+
 ---
 
-## Data Privacy Statement
-
-> [!IMPORTANT]
-> Campus Twin uses synthetic, anonymized, and open campus-style datasets. No real student academic records, grades, attendance logs, or personally identifiable information (PII) are used or stored.
+## 📜 License
+MIT License. Built for Databricks Lakehouse Campus Innovation.
