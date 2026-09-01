@@ -29,6 +29,7 @@ import { WhatIfSimulator } from './components/WhatIfSimulator';
 import { GenieChatAssistant } from './components/GenieChatAssistant';
 import { EditProfileDrawer } from './components/EditProfileDrawer';
 import { CareerPathPromptModal } from './components/CareerPathPromptModal';
+import { FloatingGenieChatbot } from './components/FloatingGenieChatbot';
 
 export default function App() {
   // Session / Local Storage Persistence
@@ -301,6 +302,15 @@ export default function App() {
         onUseDemoProfile={handleUseDemoProfile}
         onDismiss={() => setIsCareerPathPromptOpen(false)}
         hasProfile={!!student}
+      />
+
+      {/* Floating Genie Chatbot in Right Bottom */}
+      <FloatingGenieChatbot
+        student={activeStudent}
+        onOpenFullGenie={() => {
+          if (viewState === 'welcome') setViewState('app');
+          setCurrentTab('genie');
+        }}
       />
     </div>
   );

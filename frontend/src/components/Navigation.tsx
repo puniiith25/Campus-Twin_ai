@@ -55,7 +55,7 @@ export const Navigation: React.FC<NavigationProps> = ({
     { id: 'skillgaps', label: 'Skill Gaps', icon: Target },
     { id: 'roadmap', label: 'My Path', icon: Route },
     { id: 'whatif', label: 'What-If?', icon: SlidersHorizontal },
-    { id: 'genie', label: 'Ask Twin', icon: MessageSquareText },
+    { id: 'genie', label: 'Genie', icon: MessageSquareText },
     { id: 'profile', label: 'Profile', icon: User },
   ];
 
