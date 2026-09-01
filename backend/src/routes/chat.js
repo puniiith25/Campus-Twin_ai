@@ -69,6 +69,48 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Databricks Genie query / structured response endpoint
+router.post("/query", async (req, res) => {
+  try {
+    const { query, studentProfile } = req.body;
+    if (!query) {
+      return res.status(400).json({ error: "query is required" });
+    }
+
+    const target = studentProfile?.careerGoal || "AI Engineer";
+    const hours = studentProfile?.weeklyHours || 6;
+    const cgpa = studentProfile?.cgpa || 8.2;
+
+    const genieResp = await genieService.askGenie(query, studentProfile);
+
+    const structuredAnswer = {
+      recommendation: genieResp.answer,
+      why: `Your academic score (${cgpa} CGPA) clears recruitment cut-offs. With ${hours}h/week, you can systematically bridge prioritized technical gaps this semester.`,
+      skillGaps: [
+        "SQL (Intermediate for Lakehouse & analytics workflows)",
+        "Model Deployment & Fast Execution (Docker & API integration)",
+      ],
+      relevantOpportunities: (genieResp.recommendations || []).slice(0, 2).map((r) => ({
+        title: r.name || r.title,
+        type: r.type || "Opportunity",
+        provider: r.faculty_or_organizer || "Campus Innovation Cell",
+        timeCommitment: `${r.hours_per_week || 4} hrs/week`,
+      })),
+      nextAction: "Enroll in your top matching opportunity to close your primary technical gap.",
+      alternativePath: "Explore complementary software or research branches with your verified skill matrix.",
+    };
+
+    return res.json({
+      success: true,
+      answer: structuredAnswer,
+      source: "campus-twin-databricks-engine",
+    });
+  } catch (err) {
+    console.error("Genie query endpoint error:", err);
+    return res.status(500).json({ error: "Failed to process Genie query" });
+  }
+});
+
 // Chat history endpoints
 router.get("/history", (req, res) => {
   const userId = req.query.user_id || "default_user";

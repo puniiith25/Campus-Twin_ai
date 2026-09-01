@@ -233,13 +233,13 @@ class GenieService {
         .sort((a, b) => b.score - a.score);
 
       const matchedCourses = rankedCourses.filter((x) => x.score > 0).slice(0, 2).map((x) => x.item);
-      const finalCourses = matchedCourses.length > 0 ? matchedCourses : [rankedCourses[0]?.item || coursesData[0]];
+      const finalCourses = matchedCourses.length > 0 ? matchedCourses : rankedCourses.slice(0, 2).map((x) => x.item);
 
       const matchedClubs = rankedClubs.filter((x) => x.score > 0).slice(0, 1).map((x) => x.item);
-      const finalClubs = matchedClubs.length > 0 ? matchedClubs : [rankedClubs[0]?.item || clubsData[0]];
+      const finalClubs = matchedClubs.length > 0 ? matchedClubs : rankedClubs.slice(0, 1).map((x) => x.item);
 
       const matchedOpps = rankedOpps.filter((x) => x.score > 0).slice(0, 1).map((x) => x.item);
-      const finalOpps = matchedOpps.length > 0 ? matchedOpps : [rankedOpps[0]?.item || oppsData[0]];
+      const finalOpps = matchedOpps.length > 0 ? matchedOpps : rankedOpps.slice(0, 1).map((x) => x.item);
 
       const oppConditions = keywords.slice(0, 2).map((k) => `o.skills LIKE '%${k}%'`).join(" OR ");
       const clubConditions = keywords.slice(0, 2).map((k) => `cl.skills LIKE '%${k}%'`).join(" OR ");
@@ -252,18 +252,21 @@ class GenieService {
         `LIMIT 4;`;
 
       const courseList = finalCourses
+        .filter(Boolean)
         .map(
           (c) =>
-            `- **${c.course_name}** (\`${c.course_id}\` · ${c.hours_per_week || 4}h/wk)\n  *Skills: ${(c.skills || "").replace(/\|/g, ", ")}*`
+            `- **${c.course_name || "Course"}** (\`${c.course_id || "CS"}\` · ${c.hours_per_week || 4}h/wk)\n  *Skills: ${(c.skills || "").replace(/\|/g, ", ")}*`
         )
         .join("\n");
 
       const clubList = finalClubs
-        .map((cl) => `- **${cl.club_name}** (${cl.hours_per_week || 2}h/wk)\n  ${cl.description}`)
+        .filter(Boolean)
+        .map((cl) => `- **${cl.club_name || "Club"}** (${cl.hours_per_week || 2}h/wk)\n  ${cl.description || ""}`)
         .join("\n");
 
       const oppList = finalOpps
-        .map((o) => `- **${o.title}** (${o.type || "Opportunity"})\n  *${o.description}*`)
+        .filter(Boolean)
+        .map((o) => `- **${o.title || "Opportunity"}** (${o.type || "Opportunity"})\n  *${o.description || ""}*`)
         .join("\n");
 
       answer =

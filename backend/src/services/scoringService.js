@@ -1,102 +1,117 @@
 export class ScoringService {
   static calculateScore(item, studentProfile) {
-    const stopwords = new Set([
-      "i", "want", "to", "become", "a", "an", "the", "in", "and", "have", "know",
-      "per", "week", "hours", "hour", "my", "is", "for", "with", "get", "what",
-      "which", "how", "can", "help", "related", "explore", "tell", "about"
-    ]);
-
-    const goalStr = studentProfile?.goal || "AI Engineer";
-    const rawWords = goalStr
-      .toLowerCase()
-      .split(/\s+/)
-      .map((w) => w.replace(/[^a-zA-Z0-9]/g, "").trim())
-      .filter((w) => w && !stopwords.has(w) && w.length > 2);
-
-    const goalKeywords = rawWords.length > 0 ? rawWords : ["ai", "engineer"];
-
     const itemText = (
       `${item.name || ""} ${item.title || ""} ${item.description || ""} ` +
       `${item.skills || ""} ${item.department || ""} ${item.category || ""}`
     ).toLowerCase();
 
-    // 1. Goal Match (55%)
-    const goalHits = goalKeywords.filter((kw) => itemText.includes(kw)).length;
-    let goalMatch = 10.0;
+    // 1. Goal Alignment (40%)
+    const careerGoals = studentProfile?.careerGoals || [studentProfile?.goal || "AI Engineer"];
+    const sixMonthGoal = studentProfile?.sixMonthGoal || "";
+    const careerKeywords = careerGoals
+      .join(" ")
+      .toLowerCase()
+      .split(/[\s/]+/)
+      .filter((w) => w.length > 2);
+
+    const goalHits = careerKeywords.filter((kw) => itemText.includes(kw)).length;
+    let goalMatch = 15.0;
     if (goalHits > 0) {
-      goalMatch = Math.min(100.0, 50.0 + goalHits * 25.0);
+      goalMatch = Math.min(100.0, 45.0 + goalHits * 25.0);
+    }
+    if (sixMonthGoal && itemText.includes(sixMonthGoal.toLowerCase())) {
+      goalMatch = Math.min(100.0, goalMatch + 15.0);
     }
 
-    // 2. Skill Match (20%)
+    // 2. Skill Fit & Growth (25%)
     const studentSkills = (studentProfile?.skills || []).map((s) =>
       typeof s === "string" ? s.toLowerCase() : (s.name || "").toLowerCase()
     );
+    const skillsToImprove = (studentProfile?.skillsToImprove || []).map((s) => s.toLowerCase());
     const itemSkills = (item.skills || "")
       .split("|")
       .map((s) => s.trim().toLowerCase())
       .filter(Boolean);
 
-    let skillMatch = 50.0;
+    let skillMatch = 40.0;
     if (itemSkills.length > 0) {
-      const shared = itemSkills.filter((s) => studentSkills.includes(s));
-      skillMatch = shared.length > 0
-        ? Math.min(100.0, (shared.length / Math.max(1, itemSkills.length)) * 80.0 + 20.0)
-        : 40.0;
+      const currentHits = itemSkills.filter((s) => studentSkills.includes(s)).length;
+      const improveHits = itemSkills.filter((s) => skillsToImprove.includes(s)).length;
+
+      skillMatch = Math.min(
+        100.0,
+        (currentHits / Math.max(1, itemSkills.length)) * 50.0 +
+          (improveHits / Math.max(1, itemSkills.length)) * 40.0 +
+          25.0
+      );
     }
 
-    // 3. Time Fit (15%)
+    // 3. Schedule / Time Fit (20%)
     const itemHours = parseFloat(item.hours_per_week || 2);
-    const availHours = parseFloat(studentProfile?.available_hours_per_week || 6.0);
+    const availHours = parseFloat(studentProfile?.available_hours_per_week || studentProfile?.weeklyAvailableHours || 6.0);
     let timeFit = 100.0;
     if (itemHours > availHours) {
       const over = itemHours - availHours;
       timeFit = Math.max(10.0, 100.0 - over * 25.0);
+    } else {
+      // Reward matching close to budget without overloading
+      timeFit = 95.0;
     }
 
-    // 4. Opportunity Value (10%)
+    // 4. Interest & Preference Match (15%)
+    const interests = (studentProfile?.interests || []).map((i) => i.toLowerCase());
+    const priorities = (studentProfile?.preferred_opportunity_types || studentProfile?.priorities || []).map((p) =>
+      p.toLowerCase()
+    );
     const itemType = (item.type || "").toLowerCase();
-    let opportunityValue = 75.0;
-    if (
-      itemType.includes("research") ||
-      itemType.includes("fellowship") ||
-      itemType.includes("hackathon") ||
-      itemType.includes("internship")
-    ) {
-      opportunityValue = 95.0;
-    } else if (itemType.includes("course") || itemType.includes("workshop")) {
-      opportunityValue = 85.0;
-    }
 
-    // Total Score
+    let interestMatch = 50.0;
+    const interestHits = interests.filter((i) => itemText.includes(i)).length;
+    const priorityMatch = priorities.some((p) => itemType.includes(p));
+
+    interestMatch = Math.min(100.0, interestHits * 25.0 + (priorityMatch ? 40.0 : 10.0));
+
+    // Calculate Total Weighted Score (0-100)
     const totalScore = Math.round(
-      (goalMatch * 0.55 + skillMatch * 0.20 + timeFit * 0.15 + opportunityValue * 0.10) * 10
+      (goalMatch * 0.40 + skillMatch * 0.25 + timeFit * 0.20 + interestMatch * 0.15) * 10
     ) / 10;
 
-    // Label
+    // Score Label
     let label = "Low Match";
     if (totalScore >= 90) label = "Excellent Match";
     else if (totalScore >= 75) label = "Strong Match";
     else if (totalScore >= 60) label = "Good Match";
     else if (totalScore >= 40) label = "Possible Match";
 
-    // Match reasons
+    // Transparent Match Reasons (Explained)
     const reasons = [];
     if (goalMatch >= 70) {
-      reasons.push(`Directly aligns with your '${goalStr}' goal`);
+      reasons.push(`🎯 Directly supports your '${careerGoals[0]}' career direction`);
+    }
+    const matchedSkills = itemSkills.filter((s) => studentSkills.includes(s));
+    if (matchedSkills.length > 0) {
+      reasons.push(`🧠 Leverages your ${matchedSkills.join(", ")} background`);
+    }
+    const matchedGrowth = itemSkills.filter((s) => skillsToImprove.includes(s));
+    if (matchedGrowth.length > 0) {
+      reasons.push(`📈 Accelerates skill growth in ${matchedGrowth.join(", ")}`);
     }
     if (itemHours <= availHours) {
-      reasons.push(`Fits within your ${availHours}h/week schedule (${itemHours}h required)`);
+      reasons.push(`⏱ Fits your schedule (${itemHours}h/wk of your ${availHours}h budget)`);
     } else {
-      reasons.push(`Requires ${itemHours}h/week (exceeds your ${availHours}h target)`);
-    }
-    if (studentSkills.some((s) => s && itemText.includes(s))) {
-      reasons.push(`Leverages your existing skills (${studentSkills.filter(Boolean).join(", ")})`);
+      reasons.push(`⚠️ Exceeds your ${availHours}h/wk target by ${Math.round((itemHours - availHours) * 10) / 10}h`);
     }
 
     return {
       score: totalScore,
       label,
       reasons,
+      breakdown: {
+        goalMatch: Math.round(goalMatch),
+        skillMatch: Math.round(skillMatch),
+        timeFit: Math.round(timeFit),
+        interestMatch: Math.round(interestMatch),
+      },
     };
   }
 }

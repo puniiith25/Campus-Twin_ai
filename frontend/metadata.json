@@ -1,0 +1,6 @@
+{
+  "name": "Campus Twin",
+  "description": "A Databricks-powered student career intelligence platform helping students understand where they stand, discover suitable career paths, analyze skill gaps, and explore campus opportunities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

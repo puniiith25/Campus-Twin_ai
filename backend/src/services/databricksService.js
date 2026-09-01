@@ -12,7 +12,7 @@ class DatabricksService {
     this.host = config.DATABRICKS_HOST;
     this.token = config.DATABRICKS_TOKEN;
     this.warehouseId = config.DATABRICKS_WAREHOUSE_ID;
-    this.dataDir = path.resolve(__dirname, "../../data");
+    this.dataDir = path.resolve(__dirname, "../../../data");
   }
 
   /**
