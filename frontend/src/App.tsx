@@ -28,6 +28,7 @@ import { PersonalizedRoadmapView } from './components/PersonalizedRoadmapView';
 import { WhatIfSimulator } from './components/WhatIfSimulator';
 import { GenieChatAssistant } from './components/GenieChatAssistant';
 import { EditProfileDrawer } from './components/EditProfileDrawer';
+import { CareerPathPromptModal } from './components/CareerPathPromptModal';
 
 export default function App() {
   // Session / Local Storage Persistence
@@ -42,6 +43,17 @@ export default function App() {
 
   const [viewState, setViewState] = useState<'welcome' | 'app'>(student ? 'app' : 'welcome');
   const [currentTab, setCurrentTab] = useState<NavTab>('profile');
+
+  // Career Path Mandatory Notification Modal state:
+  // Shows immediately if user hasn't set a profile or career path
+  const [isCareerPathPromptOpen, setIsCareerPathPromptOpen] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('campus_twin_student_profile');
+      return !saved; // Show by default on first entry
+    } catch {
+      return true;
+    }
+  });
 
   // Modals & Drawers
   const [isSetupModalOpen, setIsSetupModalOpen] = useState(false);
@@ -61,6 +73,7 @@ export default function App() {
 
   // Handle Demo Profile Selection
   const handleUseDemoProfile = () => {
+    setIsCareerPathPromptOpen(false);
     setPendingBuiltProfile(DEFAULT_DEMO_PROFILE);
     setIsBuildingLoaderOpen(true);
   };
@@ -68,6 +81,7 @@ export default function App() {
   // Handle Profile Building complete
   const handleProfileBuilt = (newProfile: StudentProfile) => {
     setIsSetupModalOpen(false);
+    setIsCareerPathPromptOpen(false);
     setPendingBuiltProfile(newProfile);
     setIsBuildingLoaderOpen(true);
   };
@@ -84,12 +98,14 @@ export default function App() {
 
   // Start path CTA
   const handleStartPath = () => {
+    setIsCareerPathPromptOpen(false);
     setSetupInitialPrompt(undefined);
     setIsSetupModalOpen(true);
   };
 
   // Open Natural setup with prompt
   const handleOpenNaturalSetup = (prompt?: string) => {
+    setIsCareerPathPromptOpen(false);
     setSetupInitialPrompt(prompt);
     setIsSetupModalOpen(true);
   };
@@ -277,6 +293,15 @@ export default function App() {
           onSaveProfile={(updated) => setStudent(updated)}
         />
       )}
+
+      {/* Mandatory Initial Career Path Setup Notification Modal */}
+      <CareerPathPromptModal
+        isOpen={isCareerPathPromptOpen}
+        onSetCareerPath={handleStartPath}
+        onUseDemoProfile={handleUseDemoProfile}
+        onDismiss={() => setIsCareerPathPromptOpen(false)}
+        hasProfile={!!student}
+      />
     </div>
   );
 }
